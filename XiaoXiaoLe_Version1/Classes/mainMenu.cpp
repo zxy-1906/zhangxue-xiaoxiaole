@@ -3,7 +3,10 @@
 #include"mainMenu.h"
 #include"selectLevel.h"
 #include"levelOne.h"
-#include"ParticleLayer.h"
+#include"ParticleLayer.h"//粒子层
+#include "cocos-ext.h"//进度条头文件
+
+USING_NS_CC_EXT;
 
 USING_NS_CC;
 
@@ -53,6 +56,16 @@ bool MainMenu::init()
 	selectlevel->setTag(22);
 	this->addChild(selectlevel);
 
+	ControlSlider* slider = ControlSlider::create("sliderbg.png", "sliderprogress.png", "sliderThumb.png");
+	slider->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2) +Vec2(-190,-45));
+	//设置滑动条的范围  
+	slider->setMinimumValue(0);
+	slider->setMaximumValue(1000);
+	//设置滑动条当前值  
+	slider->setValue(300);
+	slider->addTargetWithActionForControlEvents(this, cccontrol_selector(MainMenu::sliderChange), Control::EventType::VALUE_CHANGED);//控制音量
+	this->addChild(slider);
+
 	auto theParctileLayer = ParticleLayer::createScene();
 	theParctileLayer->setTag(341);
 	this->addChild(theParctileLayer);
@@ -64,6 +77,7 @@ void MainMenu::onEnterTransitionDidFinish()
 {
 	Scene::onEnterTransitionDidFinish();
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("see you again .mp3", true);
+	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.3);
 }
 
 void MainMenu::menuMusicCallback(Ref* pSender)
@@ -85,6 +99,19 @@ void MainMenu::menuMusicCallback(Ref* pSender)
 void MainMenu::menuCloseCallback(cocos2d::Ref* pSender)
 {
 	Director::getInstance()->end();
+}
+
+void MainMenu::sliderChange(Ref* psender, Control::EventType event)
+{
+	ControlSlider* slider = (ControlSlider*)psender;
+	//CocosDenshion::SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume(slider->getValue());
+	float volume = slider->getValue() / 1000;
+
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->getInstance()->setBackgroundMusicVolume(volume);
+	//String* valueStr = String::createWithFormat("%f", slider->getValue());
+	//log(valueStr->getCString());
+	log("%f", CocosDenshion::SimpleAudioEngine::getInstance()->getBackgroundMusicVolume());
+	
 }
 
 void MainMenu::enterLevelOne(int level)
