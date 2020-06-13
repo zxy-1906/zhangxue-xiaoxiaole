@@ -27,7 +27,7 @@ bool Loading::init()
 
 	_loadingAudioThread = new std::thread(&Loading::loadingAudio, this);
 
-	this->schedule(schedule_selector(Loading::enterGame), 1, 0, 1.8f);
+	this->schedule(schedule_selector(Loading::enterGame), 1, 0, 3.0f);
 
 	return true;
 }
@@ -43,22 +43,22 @@ void Loading::loadingAction()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
 	SpriteFrameCache* loadFramCache = SpriteFrameCache::getInstance();//
-	loadFramCache->addSpriteFramesWithFile("loadingRun.plist");
+	loadFramCache->addSpriteFramesWithFile("loadingCube.plist");
 
 	SpriteFrame* loadSpriteFram = loadFramCache->getSpriteFrameByName("loading1.png");
 	auto loadingSprite = Sprite::createWithSpriteFrame(loadSpriteFram);
-	loadingSprite->setPosition(Vec2(visibleSize.width / 2, 5 * visibleSize.height / 11));
+	loadingSprite->setPosition(Vec2(visibleSize.width / 2, 5 * visibleSize.height / 13));
 	this->addChild(loadingSprite, 1);
 
 	Animation* loadAnimation = Animation::create();
-	for (int i = 0; i < 4; i++)
+	for (int i = 1; i < 8; i++)
 	{
-		__String *nameImage = __String::createWithFormat("loading%d.png", i + 1);
+		__String *nameImage = __String::createWithFormat("loading%d.png", i);
 		loadSpriteFram = loadFramCache->getSpriteFrameByName(nameImage->getCString());
 		loadAnimation->addSpriteFrame(loadSpriteFram);
 	}
 
-	loadAnimation->setDelayPerUnit(0.25f);
+	loadAnimation->setDelayPerUnit(0.20f);
 	loadAnimation->setRestoreOriginalFrame(true);
 
 	Animate *loadAction = Animate::create(loadAnimation);
